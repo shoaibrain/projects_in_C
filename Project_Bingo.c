@@ -7,6 +7,7 @@ void print_grid(int arr[5][5])
 {
   char name[5] = {'B', 'I','N', 'G', 'O'};
   int i,j;
+
   for (i = 0; i < 5; i++)
   {
     printf("   %c   ", name[i]);
@@ -17,7 +18,7 @@ void print_grid(int arr[5][5])
   {
     for (j = 0; j < 5; j++)
     {
-      if (i == 2 && j == 2)
+      if (arr[i][j] == 0)
       {
         printf("|   X  ");
       }
@@ -29,18 +30,33 @@ void print_grid(int arr[5][5])
   }
 }
 
+// int contains(int num, int arr[25])
+// {
+//   int found = 0;
+//   int i;
+//   for (i = 0; i < 25 ; i++)
+//   {
+//     if (arr[i] == num)
+//     {
+//       found = 1;
+//       break;
+//     }
+//   }
+//   return found;
+// }
+
 int contains(int num, int arr[25])
 {
-  int found = 0;
-  int i;
-  for (i = 0; i < 25 ; i++)
+  int found = 0,i=0;
+  do
   {
     if (arr[i] == num)
     {
-      found = 1;
-      break;
+      found =1;
     }
+    i++;
   }
+  while (i < 25 && found == 0);
   return found;
 }
 
@@ -52,6 +68,7 @@ void populate_board(int arr[5][5])
    int counter = 0;
    int random_number;
    int dup = 1;
+
    for (i = 0; i < 5; i++)
    {
      for (j = 0; j < 5; j++)
@@ -74,6 +91,7 @@ void populate_board(int arr[5][5])
            else dup = 0;
          }
          while (dup == 1);
+         dup =1;
          
           
             //  Save random_number in bank array
@@ -103,6 +121,7 @@ void populate_board(int arr[5][5])
            else dup = 0;
          }
          while (dup == 1);
+         dup =1;
          
           
             //  Save random_number in bank array
@@ -132,6 +151,7 @@ void populate_board(int arr[5][5])
            else dup = 0;
          }
          while (dup == 1);
+         dup =1;
          
           
             //  Save random_number in bank array
@@ -160,6 +180,7 @@ void populate_board(int arr[5][5])
            else dup = 0;
          }
          while (dup == 1);
+         dup =1;
          
           
             //  Save random_number in bank array
@@ -189,6 +210,7 @@ void populate_board(int arr[5][5])
            else dup = 0;
          }
          while (dup == 1);
+         dup =1;
          
           
             //  Save random_number in bank array
@@ -201,6 +223,9 @@ void populate_board(int arr[5][5])
        }  
      }
    }
+
+  // element at position [2][2] is always zero
+  arr[2][2] = 0;
 }
 
 // Function to generate a random number between start,end (inclusive)
@@ -260,6 +285,7 @@ int pick_number (int bank[], int counter)
 int num_exist(int number, int bingo_array[5][5])
 {
     int i,j;
+    int exist =0;
     for (i = 0; i < 5; i++)
     {
       for (j = 0; j < 5; j++)
@@ -267,12 +293,12 @@ int num_exist(int number, int bingo_array[5][5])
         if (bingo_array[i][j] == number)
         {
           bingo_array[i][j] = 0;
-          return 1;
+          exist =1;
         }
       }
     }
     // number is not present in bingo card
-    return 0;
+    return exist;
 }
 
 // Function to check if the row is complete
@@ -292,6 +318,8 @@ int is_row_complete(int bingo_card[5][5])
         col = 5;
         
       }
+
+
       ans[row] = is_complete;
     }
     
@@ -350,6 +378,71 @@ int is_col_complete(int bingo_card[5][5])
   
 }
 
+// Function to check if the diagonal from top left is complete
+int is_diagonal_1(int bingo_card[5][5])
+{
+  int row, col;
+  int ans[5] = {};
+  for (row =0; row <5; row++)
+  { 
+    
+    for (col =0; col < 5; col++)
+    {
+      if (row == col)
+      {
+        if (bingo_card[row][col] !=0)
+        {
+          ans[row] = 1;
+        }
+        else ans[row] = 0;
+      }
+    }
+  }
+
+ int is_diagonal = 1;
+ for (row =0; row < 5; row++)
+ {
+   if (ans[row] ==1)
+   {
+     is_diagonal =0;
+   }
+ } 
+ return is_diagonal; 
+
+}
+// Function to check if the diagonal from top right is complete
+int is_diagonal_2(int bingo_card[5][5])
+{
+  int row, col;
+  int ans[5] = {};
+  for (row =0; row <5; row++)
+  { 
+    
+    for (col =0; col < 5; col++)
+    {
+      if (row+col==4)
+      {
+        if (bingo_card[row][col] !=0)
+        {
+          ans[row] = 1;
+        }
+        else ans[row] = 0;
+      }
+    }
+  }
+
+ int is_diagonal = 1;
+ for (row =0; row < 5; row++)
+ {
+   if (ans[row] ==1)
+   {
+     is_diagonal =0;
+   }
+ } 
+ return is_diagonal; 
+
+}
+
 // Main Function
 int main(void) {
   srand(time(0)); 
@@ -370,7 +463,7 @@ int main(void) {
     num = pick_number(bank,counter);
     //Ask if the player has that number
     printf("Do you have it? (Y/N) ");
-    scanf("%s",&ans);
+    scanf("%s",ans);
 
     if (ans[0] == 'Y' || ans[0] == 'y')
     {
@@ -382,22 +475,33 @@ int main(void) {
           won = 1;
           printf("You filled out a row and a column - BINGO!!!\n");
         }
-      }
-      else if (is_row_complete(game_board))
+        else if (is_diagonal_1(game_board) || is_diagonal_2(game_board))
+        {
+          won = 1;
+          printf("You filled out a diagonal - BINGO!!!\n");
+        }
+        else if (is_row_complete(game_board))
       {
          won = 1;
          printf("You filled out a row - BINGO!!!\n");
       }
+
       else if (is_col_complete(game_board))
       {
          won = 1;
          printf("You filled out a column - BINGO!!!\n");
       }
-      else
+
+      }
+      
+       else
       {
         printf("That value is not on your BINGO card - are you trying to cheat??\n");
         print_grid(game_board);
       }
+      
+      
+     
     }
     else
     {
