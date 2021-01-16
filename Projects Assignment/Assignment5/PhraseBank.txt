@@ -1,0 +1,4 @@
+char *PhraseBank[] = {"Do not be a fool","Dark Side of the Moon", "You are awesome!",
+                 "Nothing Really Matters", "uno dos tres quatro", "Livin the best life",
+				 "PARTY! in the USA", "We Shall Overcome!",
+				 "I love Cheese Burger", "Really?", ""};
